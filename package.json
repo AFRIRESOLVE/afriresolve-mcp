@@ -1,0 +1,27 @@
+{
+  "name": "afriresolve-mcp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AFRIRESOLVE/afriresolve-mcp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AFRIRESOLVE/afriresolve-mcp/issues"
+  },
+  "homepage": "https://github.com/AFRIRESOLVE/afriresolve-mcp#readme",
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
+    "agents": "^0.20.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {}
+}

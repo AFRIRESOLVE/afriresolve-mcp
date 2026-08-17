@@ -1,1 +1,1 @@
-# afriresolve-mcp
+# Afriresolve-mcp 

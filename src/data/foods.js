@@ -18,6 +18,9 @@ export const foods = {
       "Acha",
       "Fonio"
     ],
+    aliases: [
+      "acha"
+    ],
     description:
       "Fonio is an ancient African grain cultivated mainly in West Africa. It is valued for its nutritional qualities, fast growth, and adaptability to dry environments.",
     uses: [
@@ -34,4 +37,9 @@ export const foods = {
       ]
     }
   }
+};
+
+export const foodAliases = {
+  acha: "fonio",
+  fonio: "fonio"
 };

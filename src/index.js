@@ -1,7 +1,7 @@
 import { createMcpHandler } from "agents/mcp/server";
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
-import { foods } from "./data/foods.js";
+import { foods, foodAliases } from "./data/foods.js";
 
 function createServer() {
   const server = new McpServer({
@@ -24,7 +24,8 @@ function createServer() {
     async ({ query }) => {
       const normalizedQuery = query.trim().toLowerCase();
 
-      const food = foods[normalizedQuery];
+      const canonicalTerm = foodAliases[normalizedQuery] ?? normalizedQuery;
+      const food = foods[canonicalTerm];
 
       if (!food) {
         return {

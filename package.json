@@ -13,7 +13,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/AFRIRESOLVE/afriresolve-mcp/issues"
   },
@@ -22,6 +22,5 @@
     "@modelcontextprotocol/server": "^2.0.0",
     "agents": "^0.20.1",
     "zod": "^4.4.3"
-  },
-  "devDependencies": {}
+  }
 }

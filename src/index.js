@@ -1,6 +1,7 @@
 import { createMcpHandler } from "agents/mcp/server";
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
+import { foods } from "./data/foods.js";
 
 function createServer() {
   const server = new McpServer({
@@ -20,18 +21,39 @@ function createServer() {
           .describe("The African term to resolve"),
       },
     },
-    async ({ query }) => ({
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify({
-            success: true,
-            query,
-            message: "AfriResolve MCP connection is working.",
-          }),
-        },
-      ],
-    }),
+    async ({ query }) => {
+      const normalizedQuery = query.trim().toLowerCase();
+
+      const food = foods[normalizedQuery];
+
+      if (!food) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                success: false,
+                query,
+                message: "AfriResolve does not yet have this term in its knowledge base.",
+              }),
+            },
+          ],
+        };
+      }
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({
+              success: true,
+              query,
+              data: food,
+            }),
+          },
+        ],
+      };
+    },
   );
 
   return server;

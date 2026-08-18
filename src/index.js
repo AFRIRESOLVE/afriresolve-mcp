@@ -1,7 +1,7 @@
 import { createMcpHandler } from "agents/mcp/server";
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
-import { foods, foodAliases } from "./data/foods.js";
+import { resolveFood } from "./resolver/resolve.js";
 
 function createServer() {
   const server = new McpServer({
@@ -22,39 +22,17 @@ function createServer() {
       },
     },
     async ({ query }) => {
-      const normalizedQuery = query.trim().toLowerCase();
-
-      const canonicalTerm = foodAliases[normalizedQuery] ?? normalizedQuery;
-      const food = foods[canonicalTerm];
-
-      if (!food) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({
-                success: false,
-                query,
-                message: "AfriResolve does not yet have this term in its knowledge base.",
-              }),
-            },
-          ],
-        };
-      }
+      const result = resolveFood(query);
 
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify({
-              success: true,
-              query,
-              data: food,
-            }),
+            text: JSON.stringify(result),
           },
         ],
       };
-    },
+    }
   );
 
   return server;

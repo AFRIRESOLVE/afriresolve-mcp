@@ -287,9 +287,70 @@ export const foods = {
       rich_in: ["protein", "fiber", "minerals"]
     }
   }
+,
+
+  african_yam_bean: {
+    term: "african yam bean",
+    category: "legume",
+    common_name: "African yam bean",
+    scientific_name: "Sphenostylis stenocarpa",
+    origin_regions: ["West Africa", "Central Africa"],
+    countries: ["Nigeria", "Ghana", "Benin", "Cameroon", "Togo"],
+    local_names: ["African yam bean"],
+    aliases: ["african yam bean"],
+    description:
+      "African yam bean is an indigenous African legume cultivated for its edible seeds and tubers.",
+    uses: ["Boiled seeds", "Porridge", "Flour", "Cooked tubers"],
+    nutrition: {
+      rich_in: ["protein", "fiber", "minerals"]
+    }
+  },
+
+  african_star_apple: {
+    term: "african star apple",
+    category: "fruit",
+    common_name: "African star apple",
+    scientific_name: "Chrysophyllum albidum",
+    origin_regions: ["West Africa", "Central Africa"],
+    countries: ["Nigeria", "Ghana", "Cameroon"],
+    local_names: ["Agbalumo", "Udara", "Alasa"],
+    aliases: ["agbalumo", "udara", "alasa"],
+    description:
+      "African star apple is a seasonal tropical fruit valued for its sweet to tart edible pulp.",
+    uses: ["Fresh fruit", "Juice", "Jam", "Processed fruit products"],
+    nutrition: {
+      rich_in: ["vitamin C", "fiber", "minerals"]
+    }
+  },
+
+  bitter_leaf: {
+    term: "bitter leaf",
+    category: "leafy_vegetable",
+    common_name: "Bitter leaf",
+    scientific_name: "Vernonia amygdalina",
+    origin_regions: ["West Africa", "Central Africa"],
+    countries: ["Nigeria", "Ghana", "Cameroon"],
+    local_names: ["Onugbu", "Ewuro", "Bitter leaf"],
+    aliases: ["onugbu", "ewuro"],
+    description:
+      "Bitter leaf is an African leafy vegetable commonly used in soups and other traditional dishes.",
+    uses: ["Soups", "Stews", "Cooked vegetable dishes"],
+    nutrition: {
+      rich_in: ["fiber", "vitamins", "minerals"]
+    }
+  }
+
 };
 
 export const foodAliases = {
+  "african yam bean": "african_yam_bean",
+  "african star apple": "african_star_apple",
+  agbalumo: "african_star_apple",
+  udara: "african_star_apple",
+  alasa: "african_star_apple",
+  "bitter leaf": "bitter_leaf",
+  onugbu: "bitter_leaf",
+  ewuro: "bitter_leaf",
   acha: "fonio",
   fonio: "fonio",
   "pearl millet": "millet",

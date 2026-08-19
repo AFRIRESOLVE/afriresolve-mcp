@@ -12,6 +12,14 @@ const tests = [
   ["peanut", "groundnut"],
   ["taro", "cocoyam"],
   ["egusi", "egusi"],
+  ["african yam bean", "african yam bean"],
+  ["AFRICAN YAM BEAN", "african yam bean"],
+  ["agbalumo", "african star apple"],
+  ["udara", "african star apple"],
+  ["alasa", "african star apple"],
+  ["bitter leaf", "bitter leaf"],
+  ["onugbu", "bitter leaf"],
+  ["ewuro", "bitter leaf"],
 ];
 
 for (const [query, expectedTerm] of tests) {

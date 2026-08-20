@@ -128,3 +128,24 @@ assert.ok(
 console.log("PASS: MCP tools/call - unknown term handling");
 
 console.log("Extended MCP protocol validation completed successfully.");
+
+const unknownTool = await mcpRequest(
+  5,
+  "tools/call",
+  {
+    name: "does_not_exist",
+    arguments: {},
+  }
+);
+
+assert.equal(unknownTool.jsonrpc, "2.0");
+assert.equal(unknownTool.id, 5);
+assert.equal(unknownTool.error?.code, -32602);
+assert.equal(
+  unknownTool.error?.message,
+  "Tool does_not_exist not found"
+);
+
+console.log("PASS: MCP unknown tool handling");
+
+console.log("Full MCP protocol validation completed successfully.");

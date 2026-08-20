@@ -207,3 +207,33 @@ assert.match(
 
 console.log("PASS: MCP numeric query validation");
 
+const emptyQueryCall = await mcpRequest(
+  8,
+  "tools/call",
+  {
+    name: "resolve_african_term",
+    arguments: {
+      query: "",
+    },
+  }
+);
+
+assert.equal(emptyQueryCall.jsonrpc, "2.0");
+assert.equal(emptyQueryCall.id, 8);
+assert.equal(emptyQueryCall.result?.isError, true);
+
+const emptyQueryText =
+  emptyQueryCall.result?.content?.[0]?.text;
+
+assert.ok(
+  emptyQueryText,
+  "Missing validation error response for empty query"
+);
+
+assert.match(
+  emptyQueryText,
+  /query: Too small: expected string to have >=1 characters/
+);
+
+console.log("PASS: MCP empty query validation");
+

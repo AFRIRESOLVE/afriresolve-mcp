@@ -95,3 +95,36 @@ assert.equal(resolved.data?.term, "fonio");
 console.log("PASS: MCP tools/call — acha → fonio");
 
 console.log("MCP protocol validation completed successfully.");
+
+const unknownCall = await mcpRequest(
+  4,
+  "tools/call",
+  {
+    name: "resolve_african_term",
+    arguments: {
+      query: "unknown-term-xyz",
+    },
+  }
+);
+
+assert.equal(unknownCall.jsonrpc, "2.0");
+assert.equal(unknownCall.id, 4);
+
+const unknownToolText = unknownCall.result?.content?.[0]?.text;
+assert.ok(
+  unknownToolText,
+  "Missing unknown-term resolver response"
+);
+
+const unknownResolved = JSON.parse(unknownToolText);
+
+assert.equal(unknownResolved.success, false);
+assert.equal(unknownResolved.query, "unknown-term-xyz");
+assert.ok(
+  unknownResolved.message,
+  "Unknown term should include an explanatory message"
+);
+
+console.log("PASS: MCP tools/call - unknown term handling");
+
+console.log("Extended MCP protocol validation completed successfully.");

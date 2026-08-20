@@ -149,3 +149,31 @@ assert.equal(
 console.log("PASS: MCP unknown tool handling");
 
 console.log("Full MCP protocol validation completed successfully.");
+
+const missingQueryCall = await mcpRequest(
+  6,
+  "tools/call",
+  {
+    name: "resolve_african_term",
+    arguments: {},
+  }
+);
+
+assert.equal(missingQueryCall.jsonrpc, "2.0");
+assert.equal(missingQueryCall.id, 6);
+assert.equal(missingQueryCall.result?.isError, true);
+
+const missingQueryText = missingQueryCall.result?.content?.[0]?.text;
+
+assert.ok(
+  missingQueryText,
+  "Missing validation error response for absent query"
+);
+
+assert.match(
+  missingQueryText,
+  /query: Invalid input: expected string, received undefined/
+);
+
+console.log("PASS: MCP missing query validation");
+

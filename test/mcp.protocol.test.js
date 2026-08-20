@@ -177,3 +177,33 @@ assert.match(
 
 console.log("PASS: MCP missing query validation");
 
+const numericQueryCall = await mcpRequest(
+  7,
+  "tools/call",
+  {
+    name: "resolve_african_term",
+    arguments: {
+      query: 123,
+    },
+  }
+);
+
+assert.equal(numericQueryCall.jsonrpc, "2.0");
+assert.equal(numericQueryCall.id, 7);
+assert.equal(numericQueryCall.result?.isError, true);
+
+const numericQueryText =
+  numericQueryCall.result?.content?.[0]?.text;
+
+assert.ok(
+  numericQueryText,
+  "Missing validation error response for numeric query"
+);
+
+assert.match(
+  numericQueryText,
+  /query: Invalid input: expected string, received number/
+);
+
+console.log("PASS: MCP numeric query validation");
+

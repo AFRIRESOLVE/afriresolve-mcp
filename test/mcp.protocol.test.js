@@ -237,3 +237,176 @@ assert.match(
 
 console.log("PASS: MCP empty query validation");
 
+
+const listFoodsCall = await mcpRequest(
+  20,
+  "tools/call",
+  {
+    name: "list_african_foods",
+    arguments: {},
+  }
+);
+
+assert.equal(listFoodsCall.jsonrpc, "2.0");
+assert.equal(listFoodsCall.id, 20);
+assert.equal(listFoodsCall.result?.isError, undefined);
+
+const listFoodsText =
+  listFoodsCall.result?.content?.[0]?.text;
+
+assert.ok(
+  listFoodsText,
+  "Missing list_african_foods response"
+);
+
+const listedFoods = JSON.parse(listFoodsText);
+
+assert.equal(
+  listedFoods.length,
+  20,
+  "Expected 20 African foods"
+);
+
+assert.ok(
+  listedFoods.some((food) => food.term === "fonio"),
+  "Fonio missing from food list"
+);
+
+console.log("PASS: MCP list_african_foods");
+
+
+const categoryCall = await mcpRequest(
+  21,
+  "tools/call",
+  {
+    name: "find_foods_by_category",
+    arguments: {
+      category: "grain",
+    },
+  }
+);
+
+assert.equal(categoryCall.jsonrpc, "2.0");
+assert.equal(categoryCall.id, 21);
+assert.equal(categoryCall.result?.isError, undefined);
+
+const categoryText =
+  categoryCall.result?.content?.[0]?.text;
+
+assert.ok(
+  categoryText,
+  "Missing category query response"
+);
+
+const grainFoods = JSON.parse(categoryText);
+
+assert.ok(
+  grainFoods.length > 0,
+  "Expected grain query to return results"
+);
+
+assert.ok(
+  grainFoods.some((food) => food.term === "fonio"),
+  "Fonio missing from grain query"
+);
+
+console.log("PASS: MCP find_foods_by_category");
+
+
+const countryCall = await mcpRequest(
+  22,
+  "tools/call",
+  {
+    name: "find_foods_by_country",
+    arguments: {
+      country: "nigeria",
+    },
+  }
+);
+
+assert.equal(countryCall.jsonrpc, "2.0");
+assert.equal(countryCall.id, 22);
+assert.equal(countryCall.result?.isError, undefined);
+
+const countryText =
+  countryCall.result?.content?.[0]?.text;
+
+assert.ok(
+  countryText,
+  "Missing country query response"
+);
+
+const nigeriaFoods = JSON.parse(countryText);
+
+assert.ok(
+  nigeriaFoods.length > 0,
+  "Expected Nigeria query to return results"
+);
+
+assert.ok(
+  nigeriaFoods.some((food) => food.term === "fonio"),
+  "Fonio missing from Nigeria query"
+);
+
+console.log("PASS: MCP find_foods_by_country");
+
+
+const regionCall = await mcpRequest(
+  23,
+  "tools/call",
+  {
+    name: "find_foods_by_region",
+    arguments: {
+      region: "west africa",
+    },
+  }
+);
+
+assert.equal(regionCall.jsonrpc, "2.0");
+assert.equal(regionCall.id, 23);
+assert.equal(regionCall.result?.isError, undefined);
+
+const regionText =
+  regionCall.result?.content?.[0]?.text;
+
+assert.ok(
+  regionText,
+  "Missing region query response"
+);
+
+const westAfricanFoods = JSON.parse(regionText);
+
+assert.ok(
+  westAfricanFoods.length > 0,
+  "Expected West Africa query to return results"
+);
+
+assert.ok(
+  westAfricanFoods.some((food) => food.term === "fonio"),
+  "Fonio missing from West Africa query"
+);
+
+console.log("PASS: MCP find_foods_by_region");
+
+
+const invalidCategoryCall = await mcpRequest(
+  24,
+  "tools/call",
+  {
+    name: "find_foods_by_category",
+    arguments: {
+      category: "",
+    },
+  }
+);
+
+assert.equal(invalidCategoryCall.jsonrpc, "2.0");
+assert.equal(invalidCategoryCall.id, 24);
+assert.equal(invalidCategoryCall.result?.isError, true);
+
+console.log("PASS: MCP query validation");
+
+
+console.log(
+  "Extended MCP query tool validation completed successfully."
+);

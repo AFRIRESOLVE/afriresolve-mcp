@@ -410,3 +410,150 @@ console.log("PASS: MCP query validation");
 console.log(
   "Extended MCP query tool validation completed successfully."
 );
+
+const searchAchaCall = await mcpRequest(
+  30,
+  "tools/call",
+  {
+    name: "search_african_foods",
+    arguments: {
+      query: "acha",
+    },
+  }
+);
+
+assert.equal(searchAchaCall.jsonrpc, "2.0");
+assert.equal(searchAchaCall.id, 30);
+assert.equal(searchAchaCall.result?.isError, undefined);
+
+const searchAchaText =
+  searchAchaCall.result?.content?.[0]?.text;
+
+assert.ok(
+  searchAchaText,
+  "Missing search_african_foods response for acha"
+);
+
+const searchAchaResults = JSON.parse(searchAchaText);
+
+assert.ok(
+  searchAchaResults.some((food) => food.term === "fonio"),
+  "Search for acha should return fonio"
+);
+
+console.log("PASS: MCP search_african_foods - acha -> fonio");
+
+const searchNigeriaCall = await mcpRequest(
+  31,
+  "tools/call",
+  {
+    name: "search_african_foods",
+    arguments: {
+      query: "nigeria",
+    },
+  }
+);
+
+assert.equal(searchNigeriaCall.jsonrpc, "2.0");
+assert.equal(searchNigeriaCall.id, 31);
+assert.equal(searchNigeriaCall.result?.isError, undefined);
+
+const searchNigeriaText =
+  searchNigeriaCall.result?.content?.[0]?.text;
+
+assert.ok(
+  searchNigeriaText,
+  "Missing search_african_foods response for nigeria"
+);
+
+const searchNigeriaResults = JSON.parse(searchNigeriaText);
+
+assert.ok(
+  searchNigeriaResults.length > 0,
+  "Search for nigeria should return foods"
+);
+
+console.log("PASS: MCP search_african_foods - nigeria");
+
+const searchGrainCall = await mcpRequest(
+  32,
+  "tools/call",
+  {
+    name: "search_african_foods",
+    arguments: {
+      query: "grain",
+    },
+  }
+);
+
+assert.equal(searchGrainCall.jsonrpc, "2.0");
+assert.equal(searchGrainCall.id, 32);
+assert.equal(searchGrainCall.result?.isError, undefined);
+
+const searchGrainText =
+  searchGrainCall.result?.content?.[0]?.text;
+
+assert.ok(
+  searchGrainText,
+  "Missing search_african_foods response for grain"
+);
+
+const searchGrainResults = JSON.parse(searchGrainText);
+
+assert.ok(
+  searchGrainResults.length > 0,
+  "Search for grain should return foods"
+);
+
+console.log("PASS: MCP search_african_foods - grain");
+
+const searchMissingQueryCall = await mcpRequest(
+  33,
+  "tools/call",
+  {
+    name: "search_african_foods",
+    arguments: {},
+  }
+);
+
+assert.equal(searchMissingQueryCall.jsonrpc, "2.0");
+assert.equal(searchMissingQueryCall.id, 33);
+assert.equal(searchMissingQueryCall.result?.isError, true);
+
+console.log("PASS: MCP search_african_foods - missing query");
+
+const searchNumericQueryCall = await mcpRequest(
+  34,
+  "tools/call",
+  {
+    name: "search_african_foods",
+    arguments: {
+      query: 123,
+    },
+  }
+);
+
+assert.equal(searchNumericQueryCall.jsonrpc, "2.0");
+assert.equal(searchNumericQueryCall.id, 34);
+assert.equal(searchNumericQueryCall.result?.isError, true);
+
+console.log("PASS: MCP search_african_foods - numeric query");
+
+const searchEmptyQueryCall = await mcpRequest(
+  35,
+  "tools/call",
+  {
+    name: "search_african_foods",
+    arguments: {
+      query: "",
+    },
+  }
+);
+
+assert.equal(searchEmptyQueryCall.jsonrpc, "2.0");
+assert.equal(searchEmptyQueryCall.id, 35);
+assert.equal(searchEmptyQueryCall.result?.isError, true);
+
+console.log("PASS: MCP search_african_foods - empty query");
+
+console.log("MCP search tool validation completed successfully.");

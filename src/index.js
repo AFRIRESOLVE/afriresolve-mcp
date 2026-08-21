@@ -7,6 +7,7 @@ import {
   findFoodsByCategory,
   findFoodsByCountry,
   findFoodsByRegion,
+  searchFoods,
 } from "./data/query.js";
 
 function createServer() {
@@ -125,6 +126,30 @@ function createServer() {
           {
             type: "text",
             text: JSON.stringify(findFoodsByRegion(region)),
+          },
+        ],
+      };
+    }
+  );
+
+  server.registerTool(
+    "search_african_foods",
+    {
+      description:
+        "Search the AfriResolve African food knowledge base across names, aliases, categories, countries, regions, descriptions, uses, and nutrition information.",
+      inputSchema: {
+        query: z
+          .string()
+          .min(1)
+          .describe("Search text for discovering African food records"),
+      },
+    },
+    async ({ query }) => {
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(searchFoods(query)),
           },
         ],
       };

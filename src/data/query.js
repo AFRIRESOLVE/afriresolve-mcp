@@ -31,3 +31,27 @@ export function findFoodsByRegion(region) {
     )
   );
 }
+
+export function searchFoods(query) {
+  const normalized = query.trim().toLowerCase();
+
+  return Object.values(foods).filter((food) => {
+    const searchableText = [
+      food.term,
+      food.common_name,
+      food.scientific_name,
+      food.category,
+      ...food.local_names,
+      ...food.aliases,
+      ...food.countries,
+      ...food.origin_regions,
+      food.description,
+      ...food.uses,
+      ...food.nutrition.rich_in,
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    return searchableText.includes(normalized);
+  });
+}

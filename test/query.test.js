@@ -5,6 +5,9 @@ import {
   findFoodsByCountry,
   findFoodsByRegion,
   searchFoods,
+  scoreFoodMatch,
+  rankSearchResults,
+  searchFoodsRanked,
 } from "../src/data/query.js";
 
 const allFoods = listFoods();
@@ -104,3 +107,84 @@ console.log("PASS: search country discovery");
 console.log("PASS: search category discovery");
 console.log("PASS: search invalid input handling");
 console.log("Search layer validation completed successfully.");
+
+const rankedAcha = searchFoodsRanked("acha");
+
+assert.ok(
+  rankedAcha.length > 0,
+  "Ranked search should find acha"
+);
+
+assert.equal(
+  rankedAcha[0].term,
+  "fonio",
+  "Acha should rank fonio first"
+);
+
+assert.equal(
+  rankedAcha[0].relevance.match_type,
+  "local_name",
+  "Acha should be identified as a local name"
+);
+
+assert.equal(
+  rankedAcha[0].relevance.score,
+  90,
+  "Acha local-name match should score 90"
+);
+
+const rankedFonio = searchFoodsRanked("fonio");
+
+assert.equal(
+  rankedFonio[0].term,
+  "fonio",
+  "Exact term should rank first"
+);
+
+assert.equal(
+  rankedFonio[0].relevance.score,
+  100,
+  "Exact term should score 100"
+);
+
+const rankedNigeria = searchFoodsRanked("nigeria");
+
+assert.ok(
+  rankedNigeria.length > 0,
+  "Ranked country search should return results"
+);
+
+assert.ok(
+  rankedNigeria.every(
+    (food) => food.relevance.match_type === "country"
+  ),
+  "Nigeria results should identify country matches"
+);
+
+const rankedGrain = searchFoodsRanked("grain");
+
+assert.ok(
+  rankedGrain.length > 0,
+  "Ranked category search should return results"
+);
+
+assert.ok(
+  rankedGrain.every(
+    (food) => food.relevance.match_type === "category"
+  ),
+  "Grain results should identify category matches"
+);
+
+assert.deepEqual(
+  searchFoodsRanked("unknown-term-xyz"),
+  [],
+  "Unknown ranked searches should return an empty array"
+);
+
+console.log("PASS: scoreFoodMatch");
+console.log("PASS: ranked alias search");
+console.log("PASS: ranked exact term search");
+console.log("PASS: ranked country search");
+console.log("PASS: ranked category search");
+console.log("PASS: ranked unknown search");
+console.log("Relevance engine validation completed successfully.");

@@ -557,3 +557,215 @@ assert.equal(searchEmptyQueryCall.result?.isError, true);
 console.log("PASS: MCP search_african_foods - empty query");
 
 console.log("MCP search tool validation completed successfully.");
+
+const rankAchaCall = await mcpRequest(
+  40,
+  "tools/call",
+  {
+    name: "rank_african_foods",
+    arguments: {
+      query: "acha",
+    },
+  }
+);
+
+assert.equal(rankAchaCall.jsonrpc, "2.0");
+assert.equal(rankAchaCall.id, 40);
+assert.equal(rankAchaCall.result?.isError, undefined);
+
+const rankAchaText =
+  rankAchaCall.result?.content?.[0]?.text;
+
+assert.ok(
+  rankAchaText,
+  "Missing rank_african_foods response for acha"
+);
+
+const rankAchaResults = JSON.parse(rankAchaText);
+
+assert.ok(
+  rankAchaResults.length > 0,
+  "Ranked search for acha should return results"
+);
+
+assert.equal(
+  rankAchaResults[0].term,
+  "fonio",
+  "Ranked search for acha should put fonio first"
+);
+
+assert.equal(
+  rankAchaResults[0].relevance.score,
+  90,
+  "Acha should receive the expected relevance score"
+);
+
+console.log("PASS: MCP rank_african_foods - acha -> fonio");
+
+const rankFonioCall = await mcpRequest(
+  41,
+  "tools/call",
+  {
+    name: "rank_african_foods",
+    arguments: {
+      query: "fonio",
+    },
+  }
+);
+
+assert.equal(rankFonioCall.jsonrpc, "2.0");
+assert.equal(rankFonioCall.id, 41);
+assert.equal(rankFonioCall.result?.isError, undefined);
+
+const rankFonioText =
+  rankFonioCall.result?.content?.[0]?.text;
+
+assert.ok(
+  rankFonioText,
+  "Missing rank_african_foods response for fonio"
+);
+
+const rankFonioResults = JSON.parse(rankFonioText);
+
+assert.equal(
+  rankFonioResults[0].term,
+  "fonio",
+  "Exact fonio search should rank fonio first"
+);
+
+assert.equal(
+  rankFonioResults[0].relevance.score,
+  100,
+  "Exact fonio search should score 100"
+);
+
+console.log("PASS: MCP rank_african_foods - exact term");
+
+const rankNigeriaCall = await mcpRequest(
+  42,
+  "tools/call",
+  {
+    name: "rank_african_foods",
+    arguments: {
+      query: "nigeria",
+    },
+  }
+);
+
+assert.equal(rankNigeriaCall.jsonrpc, "2.0");
+assert.equal(rankNigeriaCall.id, 42);
+assert.equal(rankNigeriaCall.result?.isError, undefined);
+
+const rankNigeriaText =
+  rankNigeriaCall.result?.content?.[0]?.text;
+
+assert.ok(
+  rankNigeriaText,
+  "Missing rank_african_foods response for nigeria"
+);
+
+const rankNigeriaResults = JSON.parse(rankNigeriaText);
+
+assert.ok(
+  rankNigeriaResults.length > 0,
+  "Nigeria ranked search should return results"
+);
+
+assert.ok(
+  rankNigeriaResults.every(
+    (food) => food.relevance.match_type === "country"
+  ),
+  "Nigeria ranked results should identify country matches"
+);
+
+console.log("PASS: MCP rank_african_foods - nigeria");
+
+const rankGrainCall = await mcpRequest(
+  43,
+  "tools/call",
+  {
+    name: "rank_african_foods",
+    arguments: {
+      query: "grain",
+    },
+  }
+);
+
+assert.equal(rankGrainCall.jsonrpc, "2.0");
+assert.equal(rankGrainCall.id, 43);
+assert.equal(rankGrainCall.result?.isError, undefined);
+
+const rankGrainText =
+  rankGrainCall.result?.content?.[0]?.text;
+
+assert.ok(
+  rankGrainText,
+  "Missing rank_african_foods response for grain"
+);
+
+const rankGrainResults = JSON.parse(rankGrainText);
+
+assert.ok(
+  rankGrainResults.length > 0,
+  "Grain ranked search should return results"
+);
+
+assert.ok(
+  rankGrainResults.every(
+    (food) => food.relevance.match_type === "category"
+  ),
+  "Grain ranked results should identify category matches"
+);
+
+console.log("PASS: MCP rank_african_foods - grain");
+
+const rankMissingQueryCall = await mcpRequest(
+  44,
+  "tools/call",
+  {
+    name: "rank_african_foods",
+    arguments: {},
+  }
+);
+
+assert.equal(rankMissingQueryCall.jsonrpc, "2.0");
+assert.equal(rankMissingQueryCall.id, 44);
+assert.equal(rankMissingQueryCall.result?.isError, true);
+
+console.log("PASS: MCP rank_african_foods - missing query");
+
+const rankNumericQueryCall = await mcpRequest(
+  45,
+  "tools/call",
+  {
+    name: "rank_african_foods",
+    arguments: {
+      query: 123,
+    },
+  }
+);
+
+assert.equal(rankNumericQueryCall.jsonrpc, "2.0");
+assert.equal(rankNumericQueryCall.id, 45);
+assert.equal(rankNumericQueryCall.result?.isError, true);
+
+console.log("PASS: MCP rank_african_foods - numeric query");
+
+const rankEmptyQueryCall = await mcpRequest(
+  46,
+  "tools/call",
+  {
+    name: "rank_african_foods",
+    arguments: {
+      query: "",
+    },
+  }
+);
+
+assert.equal(rankEmptyQueryCall.jsonrpc, "2.0");
+assert.equal(rankEmptyQueryCall.id, 46);
+assert.equal(rankEmptyQueryCall.result?.isError, true);
+
+console.log("PASS: MCP rank_african_foods - empty query");
+
+console.log("MCP ranked search validation completed successfully.");

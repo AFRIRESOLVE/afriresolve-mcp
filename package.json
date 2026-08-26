@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node test/resolve.test.js && node test/data.test.js && node test/data.integrity.test.js && node test/query.test.js && node test/production.test.js && node test/mcp.protocol.test.js"
+    "test": "node test/resolve.test.js && node test/data.test.js && node test/data.integrity.test.js && node test/query.test.js && node test/intelligence.events.test.js && node test/production.test.js && node test/mcp.protocol.test.js"
   },
   "repository": {
     "type": "git",

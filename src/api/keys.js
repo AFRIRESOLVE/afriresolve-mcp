@@ -30,6 +30,27 @@ export async function handleKeyApi(request, env) {
     return json({ error: "name_and_email_required" }, 400);
   }
 
+  const existingCustomer = await env.DB.prepare(
+    `SELECT customer_id, name, email, plan, credits
+     FROM customers
+     WHERE lower(email) = lower(?)
+     LIMIT 1`
+  ).bind(email).first();
+
+  if (existingCustomer) {
+    return json({
+      error: "email_already_registered",
+      message: "An AfriResolve account already exists for this email. Use your existing API key.",
+      customer: {
+        customer_id: existingCustomer.customer_id,
+        name: existingCustomer.name,
+        email: existingCustomer.email,
+        plan: existingCustomer.plan,
+        credits: existingCustomer.credits,
+      },
+    }, 409);
+  }
+
   const apiKey = generateApiKey();
   const apiKeyHash = await hashApiKey(apiKey);
   const customerId = `cust_${crypto.randomUUID().replaceAll("-", "").slice(0, 16)}`;

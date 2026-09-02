@@ -128,13 +128,35 @@ async function createApiKey(event) {
     result.innerHTML =
       "<strong>API key created successfully.</strong><br>" +
       "<small>Save this key now. It will not be shown again.</small>" +
-      "<pre style='white-space:pre-wrap;word-break:break-all'>" +
+      "<pre id='createdApiKey' style='white-space:pre-wrap;word-break:break-all'>" +
       data.api_key +
-      "</pre>";
+      "</pre>" +
+      "<button type='button' onclick='copyCreatedApiKey()' style='padding:10px 14px;border:0;border-radius:8px;cursor:pointer'>" +
+      "Copy API Key" +
+      "</button>";
 
     document.getElementById("apiKey").value = data.api_key;
   } catch (error) {
     result.textContent = "Network error. Please try again.";
+  }
+}
+
+async function copyCreatedApiKey() {
+  const key = document.getElementById("createdApiKey")?.textContent?.trim();
+  if (!key) return;
+
+  try {
+    await navigator.clipboard.writeText(key);
+    const buttons = document.querySelectorAll("button");
+    const button = [...buttons].find((item) => item.textContent === "Copy API Key");
+    if (button) {
+      button.textContent = "Copied!";
+      setTimeout(() => {
+        button.textContent = "Copy API Key";
+      }, 2000);
+    }
+  } catch {
+    alert("Copy failed. Please copy the API key manually.");
   }
 }
 

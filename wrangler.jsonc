@@ -3,10 +3,10 @@
   "name": "afriresolve-mcp",
   "main": "src/index.js",
   "compatibility_date": "2026-08-16",
+  "compatibility_flags": ["nodejs_compat"],
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1,
-    "redact_query_string": false,
     "logs": {
       "enabled": true,
       "head_sampling_rate": 1,
@@ -18,5 +18,13 @@
       "persist": true,
       "head_sampling_rate": 1
     }
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "afri-resolve-db",
+      "database_id": "26c4c1f0-666c-4e88-8520-e08fd47593ca",
+      "migrations_dir": "migrations"
+    }
+  ]
 }

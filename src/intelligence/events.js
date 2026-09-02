@@ -14,6 +14,7 @@ export function createEvent({
   tool = "",
   success = null,
   metadata = {},
+  source = "unknown",
 }) {
   return {
     event_id: crypto.randomUUID(),
@@ -23,6 +24,7 @@ export function createEvent({
     query: clean(query).toLowerCase(),
     success,
     metadata,
+    source: clean(source).toLowerCase() || "unknown",
   };
 }
 
@@ -31,6 +33,7 @@ export function createQueryEvent({
   query,
   success,
   metadata = {},
+  source = "unknown",
 }) {
   return createEvent({
     type: success ? "query_success" : "query_failure",
@@ -38,6 +41,7 @@ export function createQueryEvent({
     query,
     success,
     metadata,
+    source,
   });
 }
 
@@ -45,12 +49,14 @@ export function createDemandEvent({
   tool,
   query,
   metadata = {},
+  source = "unknown",
 }) {
   return createEvent({
     type: "demand_signal",
     tool,
     query,
     metadata,
+    source,
   });
 }
 
@@ -58,6 +64,7 @@ export function createKnowledgeGapEvent({
   query,
   tool = "",
   metadata = {},
+  source = "unknown",
 }) {
   return createEvent({
     type: "knowledge_gap",
@@ -65,6 +72,7 @@ export function createKnowledgeGapEvent({
     query,
     success: false,
     metadata,
+    source,
   });
 }
 
@@ -73,6 +81,7 @@ export function isValidEvent(event) {
     event &&
       typeof event.event_id === "string" &&
       typeof event.timestamp === "string" &&
-      typeof event.type === "string"
+      typeof event.type === "string" &&
+      typeof event.source === "string"
   );
 }

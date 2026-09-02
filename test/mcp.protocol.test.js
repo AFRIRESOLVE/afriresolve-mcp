@@ -769,3 +769,51 @@ assert.equal(rankEmptyQueryCall.result?.isError, true);
 console.log("PASS: MCP rank_african_foods - empty query");
 
 console.log("MCP ranked search validation completed successfully.");
+
+async function callDishTool(name, args = {}) {
+  const response = await mcpRequest(
+    `dish-${name}-${Date.now()}`,
+    "tools/call",
+    { name, arguments: args }
+  );
+
+  assert.equal(response.error, undefined);
+  return JSON.parse(response.result.content[0].text);
+}
+
+const resolvedDish = await callDishTool(
+  "resolve_african_dish",
+  { query: "jollof" }
+);
+
+assert.equal(resolvedDish.common_name, "Jollof rice");
+console.log("PASS: MCP resolve_african_dish - jollof");
+
+const dishes = await callDishTool("list_african_dishes");
+assert.equal(dishes.length, 5);
+console.log("PASS: MCP list_african_dishes");
+
+const nigeriaDishes = await callDishTool(
+  "find_dishes_by_country",
+  { country: "Nigeria" }
+);
+assert.equal(nigeriaDishes.length, 5);
+console.log("PASS: MCP find_dishes_by_country - Nigeria");
+
+const westAfricaDishes = await callDishTool(
+  "find_dishes_by_region",
+  { region: "West Africa" }
+);
+assert.equal(westAfricaDishes.length, 5);
+console.log("PASS: MCP find_dishes_by_region - West Africa");
+
+const beanDishes = await callDishTool(
+  "find_dishes_by_ingredient",
+  { ingredient: "beans" }
+);
+assert.equal(beanDishes.length, 2);
+console.log("PASS: MCP find_dishes_by_ingredient - beans");
+
+console.log("MCP dish tool validation completed successfully.");
+
+

@@ -59,6 +59,61 @@ shown only once.</p>
 
 <pre><code>Authorization: Bearer afr_YOUR_API_KEY</code></pre>
 
+<h2>Try the API</h2>
+
+<div class="card">
+<label for="apiKey"><strong>API key</strong></label>
+<br>
+<input id="apiKey" type="password" placeholder="afr_YOUR_API_KEY"
+style="width:100%;box-sizing:border-box;padding:10px;margin:8px 0 14px">
+
+<label for="term"><strong>African food term</strong></label>
+<br>
+<input id="term" value="acha"
+style="width:100%;box-sizing:border-box;padding:10px;margin:8px 0 14px">
+
+<button onclick="resolveTerm()"
+style="padding:10px 18px;border:0;border-radius:8px;cursor:pointer">
+Resolve term
+</button>
+
+<pre id="result" style="margin-top:16px">Enter your API key and click Resolve term.</pre>
+</div>
+
+<script>
+async function resolveTerm() {
+  const apiKey = document.getElementById("apiKey").value.trim();
+  const query = document.getElementById("term").value.trim();
+  const result = document.getElementById("result");
+
+  if (!apiKey || !query) {
+    result.textContent = "API key and term are required.";
+    return;
+  }
+
+  result.textContent = "Loading...";
+
+  try {
+    const response = await fetch("/v1/resolve", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey
+      },
+      body: JSON.stringify({ query })
+    });
+
+    const data = await response.json();
+    result.textContent = JSON.stringify(data, null, 2);
+  } catch (error) {
+    result.textContent = JSON.stringify({
+      success: false,
+      error: "request_failed"
+    }, null, 2);
+  }
+}
+</script>
+
 <h2>Resolve African food terms</h2>
 
 <pre><code>POST /v1/resolve

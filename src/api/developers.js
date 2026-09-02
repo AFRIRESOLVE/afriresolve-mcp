@@ -37,6 +37,25 @@ names, aliases and related knowledge through a simple API and MCP tools.</p>
 
 <h2>Get started</h2>
 
+<div class="card" style="margin-top:24px">
+<h2>Create your free API key</h2>
+<p>Get 100 free credits and start using the AfriResolve API immediately.</p>
+
+<form onsubmit="createApiKey(event)" style="display:grid;gap:12px;max-width:520px">
+<input id="signupName" type="text" placeholder="Your name or company" required
+style="padding:12px;border:1px solid #ccc;border-radius:8px">
+
+<input id="signupEmail" type="email" placeholder="Email address" required
+style="padding:12px;border:1px solid #ccc;border-radius:8px">
+
+<button type="submit" style="padding:12px;border:0;border-radius:8px;cursor:pointer">
+Create Free API Key
+</button>
+</form>
+
+<div id="signupResult" style="margin-top:16px"></div>
+</div>
+
 <p>Create a free developer API key:</p>
 
 <pre><code>POST /v1/keys
@@ -81,6 +100,44 @@ Resolve term
 </div>
 
 <script>
+async function createApiKey(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("signupName").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const result = document.getElementById("signupResult");
+
+  result.textContent = "Creating your API key...";
+
+  try {
+    const response = await fetch("/v1/keys", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({ name, email })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      result.textContent = data.error || "Unable to create API key.";
+      return;
+    }
+
+    result.innerHTML =
+      "<strong>API key created successfully.</strong><br>" +
+      "<small>Save this key now. It will not be shown again.</small>" +
+      "<pre style='white-space:pre-wrap;word-break:break-all'>" +
+      data.api_key +
+      "</pre>";
+
+    document.getElementById("apiKey").value = data.api_key;
+  } catch (error) {
+    result.textContent = "Network error. Please try again.";
+  }
+}
+
 async function resolveTerm() {
   const apiKey = document.getElementById("apiKey").value.trim();
   const query = document.getElementById("term").value.trim();

@@ -30,6 +30,7 @@ import {
 import { persistEvent } from "./intelligence/persist.js";
 import { getIntelligenceReport } from "./intelligence/report.js";
 import { chargeToolRequest, settleToolRequest } from "./billing/gate.js";
+import { handleRestApi } from "./api/rest.js";
 import { createPayment } from "./payments/service.js";
 import { verifyPaystackTransaction } from "./payments/paystack.js";
 import { fulfillPayment } from "./payments/fulfill.js";
@@ -593,6 +594,9 @@ async function getToolName(request) {
 
 export default {
   async fetch(request, env, ctx) {
+    const restResponse = await handleRestApi(request, env, ctx);
+    if (restResponse) return restResponse;
+
     const url = new URL(request.url);
 
     if (url.pathname === "/pay/callback") {

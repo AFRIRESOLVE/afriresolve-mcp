@@ -779,13 +779,6 @@ export default {
         typeof body?.plan === "string"
           ? body.plan.trim().toLowerCase()
           : "";
-
-       const email =
-        typeof body?.email === "string"
-          ? body.email.trim().toLowerCase()
-          : "";
-
-
       const requestedCountry =
         typeof body?.country === "string"
           ? body.country.trim().toUpperCase()
@@ -809,27 +802,12 @@ if (!plan) {
         );
       }
 
-      if (!email) {
-        return new Response(
-          JSON.stringify({
-            error: "missing_email",
-          }),
-          {
-            status: 400,
-            headers: {
-              "content-type": "application/json",
-            },
-          }
-        );
-      }
-
       const payment = await createPayment({
         db: env.DB,
         secretKey: env.PAYSTACK_SECRET_KEY,
         apiKey,
         plan,
-        email,
-        country,
+country,
         callbackUrl: `${url.origin}/pay/callback`,
       });
 

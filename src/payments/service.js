@@ -12,7 +12,6 @@ export async function createPayment({
   secretKey,
   apiKey,
   plan,
-  email,
   callbackUrl,
   country,
 }) {
@@ -54,9 +53,9 @@ export async function createPayment({
   }
 
   const paymentEmail =
-    typeof email === "string" && email.trim()
-      ? email.trim().toLowerCase()
-      : authentication.customer.email;
+    typeof authentication.customer.email === "string"
+      ? authentication.customer.email.trim().toLowerCase()
+      : "";
 
   if (!paymentEmail) {
     return {

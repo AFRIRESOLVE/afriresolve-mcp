@@ -870,7 +870,20 @@ country,
     );
 
     if (billing?.charged) {
-      const successful = response.ok;
+      let successful = response.ok;
+
+      if (response.ok) {
+        try {
+          const clonedResponse = response.clone();
+          const rawBody = await clonedResponse.text();
+
+          if (rawBody.includes('"isError":true')) {
+            successful = false;
+          }
+        } catch (error) {
+          console.error("AfriResolve billing response inspection failed:", error);
+        }
+      }
 
       ctx?.waitUntil?.(
         settleToolRequest(env.DB, {
@@ -885,8 +898,8 @@ country,
           console.error("AfriResolve billing settlement failed:", error);
         })
       );
-    }
+      }
 
-    return response;
+  return response;
   },
 };

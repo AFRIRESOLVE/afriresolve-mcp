@@ -161,6 +161,46 @@ export async function handleKeyApi(request, env) {
   const customer = authentication.customer;
 
   if (url.pathname === "/v1/keys") {
+    if (request.method === "POST") {
+      const currentApiKey = getApiKey(request);
+      const currentApiKeyHash = await hashApiKey(currentApiKey);
+      const newApiKey = generateApiKey();
+      const newApiKeyHash = await hashApiKey(newApiKey);
+      const now = new Date().toISOString();
+
+      const result = await env.DB.prepare(
+        `UPDATE customers
+         SET api_key_hash = ?,
+             updated_at = ?
+         WHERE customer_id = ?
+           AND api_key_hash = ?
+           AND status = 'active'`
+      )
+        .bind(
+          newApiKeyHash,
+          now,
+          customer.customer_id,
+          currentApiKeyHash
+        )
+        .run();
+
+      if (!result.success || result.meta?.changes !== 1) {
+        return json(
+          { error: "key_rotation_failed" },
+          500
+        );
+      }
+
+      return json({
+        success: true,
+        rotated: true,
+        customer_id: customer.customer_id,
+        api_key: newApiKey,
+        warning:
+          "Store this API key securely. It will not be shown again.",
+      });
+    }
+
     if (request.method === "GET") {
       return json({
         success: true,

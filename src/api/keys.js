@@ -58,7 +58,7 @@ export async function handleKeyApi(request, env) {
     return null;
   }
 
-  if (url.pathname === "/v1/keys" && request.method === "POST") {
+  if (url.pathname === "/v1/keys" && request.method === "POST" && !getApiKey(request)) {
     let body;
 
     try {

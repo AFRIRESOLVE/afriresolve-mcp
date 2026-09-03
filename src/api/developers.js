@@ -245,6 +245,43 @@ const PRICING_PLANS = [
   ["enterprise", "Enterprise", "1,000,000"]
 ];
 
+async function startCheckout(plan) {
+  const apiKey = document.getElementById("apiKey").value.trim();
+
+  if (!apiKey) {
+    alert("Please create or enter your AfriResolve API key first.");
+    document.getElementById("apiKey").focus();
+    return;
+  }
+
+  try {
+    const response = await fetch("/pay", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey
+      },
+      body: JSON.stringify({ plan })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.message || data.error || "Unable to start payment."
+      );
+    }
+
+    if (!data.authorization_url) {
+      throw new Error("Paystack checkout URL was not returned.");
+    }
+
+    window.location.href = data.authorization_url;
+  } catch (error) {
+    alert(error.message || "Unable to start payment.");
+  }
+}
+
 function renderPricing(marketCode) {
   const market =
     AFRIRESOLVE_PRICING[marketCode] || AFRIRESOLVE_PRICING.INTL;
@@ -259,7 +296,11 @@ function renderPricing(marketCode) {
       const amount = market.prices[plan[0]].toLocaleString();
       return '<div class="card"><strong>' + plan[1] +
         '</strong><p>' + plan[2] + ' credits/month · ' +
-        market.symbol + amount + '</p></div>';
+        market.symbol + amount + '</p>' +
+              '<button type="button" onclick="startCheckout(\'' +
+              plan[0] + '\')" ' +
+              'style="margin-top:8px;padding:10px 16px;border:0;border-radius:8px;cursor:pointer">' +
+              'Buy ' + plan[1] + '</button></div>';
     }).join("");
 }
 

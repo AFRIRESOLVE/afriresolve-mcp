@@ -23,5 +23,8 @@ export const PAYMENT_PLANS = {
 
 export function getPaymentPlan(plan) {
   if (typeof plan !== "string") return null;
-  return PAYMENT_PLANS[plan.trim().toLowerCase()] || null;
+
+  return (
+    PAYMENT_PLANS[plan.trim().toLowerCase()] || null
+  );
 }

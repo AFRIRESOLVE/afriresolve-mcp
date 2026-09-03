@@ -1,3 +1,5 @@
+import { PAYMENT_MARKETS } from "../payments/markets.js";
+
 export function handleDeveloperPage(request) {
   const url = new URL(request.url);
 
@@ -220,11 +222,71 @@ async function resolveTerm() {
 }</code></pre>
 
 <h2>Pricing</h2>
+<div class="card">
+  <label for="marketSelector"><strong>Pricing for your market</strong></label>
+  <select id="marketSelector"
+    style="width:100%;box-sizing:border-box;padding:12px;margin-top:8px;border:1px solid #ccc;border-radius:8px">
+    <option value="NG">🇳🇬 Nigeria — NGN</option>
+    <option value="KE">🇰🇪 Kenya — KES</option>
+    <option value="ZA">🇿🇦 South Africa — ZAR</option>
+    <option value="EG">🇪🇬 Egypt — EGP</option>
+    <option value="INTL">🌎 International — USD</option>
+  </select>
+  <p id="pricingMarketLabel" style="margin-bottom:0"></p>
+</div>
 
-<div class="card"><strong>Free</strong><p>100 credits/month · $0</p></div>
-<div class="card"><strong>Developer</strong><p>10,000 credits/month · $29</p></div>
-<div class="card"><strong>Pro</strong><p>100,000 credits/month · $199</p></div>
-<div class="card"><strong>Enterprise</strong><p>1,000,000 credits/month · $999</p></div>
+<div id="pricingCards"></div>
+
+<script>
+const AFRIRESOLVE_PRICING = ${JSON.stringify(PAYMENT_MARKETS)};
+const PRICING_PLANS = [
+  ["developer", "Developer", "10,000"],
+  ["pro", "Pro", "100,000"],
+  ["enterprise", "Enterprise", "1,000,000"]
+];
+
+function renderPricing(marketCode) {
+  const market =
+    AFRIRESOLVE_PRICING[marketCode] || AFRIRESOLVE_PRICING.INTL;
+
+  document.getElementById("pricingMarketLabel").textContent =
+    "Prices shown in " + market.currency + " for " + market.name + ".";
+
+  document.getElementById("pricingCards").innerHTML =
+    '<div class="card"><strong>Free</strong><p>100 credits/month · ' +
+    market.symbol + '0</p></div>' +
+    PRICING_PLANS.map(function(plan) {
+      const amount = market.prices[plan[0]].toLocaleString();
+      return '<div class="card"><strong>' + plan[1] +
+        '</strong><p>' + plan[2] + ' credits/month · ' +
+        market.symbol + amount + '</p></div>';
+    }).join("");
+}
+
+function detectMarket() {
+  const timezone =
+    Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+
+  if (timezone === "Africa/Lagos") return "NG";
+  if (timezone === "Africa/Nairobi") return "KE";
+  if (timezone === "Africa/Johannesburg") return "ZA";
+  if (timezone === "Africa/Cairo") return "EG";
+
+  return "INTL";
+}
+
+const marketSelector =
+  document.getElementById("marketSelector");
+
+const detectedMarket = detectMarket();
+
+marketSelector.value = detectedMarket;
+renderPricing(detectedMarket);
+
+marketSelector.addEventListener("change", function() {
+  renderPricing(this.value);
+});
+</script>
 
 <h2>Endpoints</h2>
 

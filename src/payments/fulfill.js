@@ -47,7 +47,7 @@ export async function fulfillPayment(db, reference, transaction) {
       };
     }
 
-    if (Number(transaction.amount) !== paymentPlan.amountUsd * 100) {
+    if (Number(transaction.amount) !== Number(payment.amount) * 100) {
       return {
         success: false,
         fulfilled: false,

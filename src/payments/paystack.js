@@ -11,11 +11,12 @@ export async function initializePaystackTransaction({
   secretKey,
   email,
   amount,
+  currency,
   reference,
   callbackUrl,
   metadata = {},
 }) {
-  if (!secretKey || !email || !amount || !reference) {
+  if (!secretKey || !email || !amount || !currency || !reference) {
     return {
       success: false,
       reason: "missing_required_payment_parameters",
@@ -31,7 +32,7 @@ export async function initializePaystackTransaction({
         body: JSON.stringify({
           email,
           amount: String(amount),
-          currency: "USD",
+          currency,
           reference,
           callback_url: callbackUrl,
           metadata: JSON.stringify(metadata),

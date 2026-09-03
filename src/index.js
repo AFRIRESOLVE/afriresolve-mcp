@@ -780,12 +780,22 @@ export default {
           ? body.plan.trim().toLowerCase()
           : "";
 
-      const email =
+       const email =
         typeof body?.email === "string"
           ? body.email.trim().toLowerCase()
           : "";
 
-      if (!plan) {
+
+      const requestedCountry =
+        typeof body?.country === "string"
+          ? body.country.trim().toUpperCase()
+          : "";
+
+      const country =
+        request.cf?.country ||
+        requestedCountry ||
+        "INTL";
+if (!plan) {
         return new Response(
           JSON.stringify({
             error: "missing_plan",
@@ -819,6 +829,7 @@ export default {
         apiKey,
         plan,
         email,
+        country,
         callbackUrl: `${url.origin}/pay/callback`,
       });
 
@@ -828,6 +839,8 @@ export default {
           : payment.reason === "invalid_api_key"
             ? 401
             : payment.reason === "invalid_payment_plan"
+              ? 400
+              : payment.reason === "invalid_payment_market"
               ? 400
               : 500;
 

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.AFRIRESOLVE/afriresolve-mcp",
+  "title": "AfriResolve",
+  "description": "African intelligence infrastructure for AI apps, developers, and data products via MCP.",
+  "repository": {
+    "url": "https://github.com/AFRIRESOLVE/afriresolve-mcp",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://afriresolve-mcp.afriresolve28.workers.dev/mcp",
+      "headers": [
+        {
+          "name": "X-API-Key",
+          "description": "AfriResolve API key for authenticated access",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

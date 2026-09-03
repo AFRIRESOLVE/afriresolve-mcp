@@ -1,5 +1,6 @@
 import { authenticateCustomer } from "../billing/auth.js";
 import { getPaymentPlan } from "./plans.js";
+import { getLocalizedPaymentPrice } from "./markets.js";
 import { initializePaystackTransaction } from "./paystack.js";
 
 function createReference() {
@@ -13,6 +14,7 @@ export async function createPayment({
   plan,
   email,
   callbackUrl,
+  country,
 }) {
   const authentication = await authenticateCustomer(db, apiKey);
 
@@ -29,6 +31,18 @@ export async function createPayment({
     return {
       success: false,
       reason: "invalid_payment_plan",
+    };
+  }
+
+  const localizedPrice = getLocalizedPaymentPrice(
+    paymentPlan.plan,
+    country
+  );
+
+  if (!localizedPrice) {
+    return {
+      success: false,
+      reason: "invalid_payment_market",
     };
   }
 
@@ -80,8 +94,8 @@ export async function createPayment({
         paymentId,
         customer.customer_id,
         paymentPlan.plan,
-        paymentPlan.amountUsd,
-        "USD",
+        localizedPrice.amount,
+        localizedPrice.currency,
         reference,
         "initialized",
         paymentPlan.credits,
@@ -97,7 +111,8 @@ export async function createPayment({
     const initialized = await initializePaystackTransaction({
       secretKey,
       email: paymentEmail,
-      amount: paymentPlan.amountUsd * 100,
+      amount: localizedPrice.amount * 100,
+      currency: localizedPrice.currency,
       reference,
       callbackUrl,
       metadata: {
@@ -149,7 +164,10 @@ export async function createPayment({
       reference: initialized.reference,
       authorization_url: initialized.authorization_url,
       plan: paymentPlan.plan,
-      amount_usd: paymentPlan.amountUsd,
+      amount: localizedPrice.amount,
+      currency: localizedPrice.currency,
+      market: localizedPrice.market,
+      market_name: localizedPrice.marketName,
       credits: paymentPlan.credits,
     };
   } catch (error) {

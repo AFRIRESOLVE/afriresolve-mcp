@@ -6,6 +6,10 @@ AfriResolve is a machine-readable African knowledge and intelligence service exp
 
 It helps AI systems and applications resolve African terms, discover African foods and dishes, and build Africa-focused applications on structured data.
 
+**👉 Get your free API key:** https://afriresolve-mcp.afriresolve28.workers.dev/developers
+**📖 GitHub:** https://github.com/AFRIRESOLVE/afriresolve-mcp
+**🎯 Free tier:** 100 API credits/month
+
 ## 🚀 Production
 
 **MCP endpoint**

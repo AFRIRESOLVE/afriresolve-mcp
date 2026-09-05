@@ -581,6 +581,22 @@ function getApiKey(request) {
   return "";
 }
 
+const MCP_TOOL_NAMES = new Set([
+  "resolve_african_dish",
+  "list_african_dishes",
+  "find_dishes_by_country",
+  "find_dishes_by_region",
+  "find_dishes_by_ingredient",
+  "resolve_african_term",
+  "list_african_foods",
+  "find_foods_by_category",
+  "find_foods_by_country",
+  "find_foods_by_region",
+  "rank_african_foods",
+  "search_african_foods",
+  "get_afriresolve_intelligence",
+]);
+
 async function getToolName(request) {
   if (request.method !== "POST") return null;
 
@@ -854,7 +870,7 @@ country,
     const toolName = await getToolName(request);
     let billing = null;
 
-    if (toolName) {
+    if (toolName && MCP_TOOL_NAMES.has(toolName)) {
       const apiKey = getApiKey(request);
 
       if (apiKey) {

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 
 const URL =
   "https://afriresolve-mcp.afriresolve28.workers.dev/mcp";
+const API_KEY = process.env.AFRI_API_KEY?.trim();
 
 async function mcpRequest(id, method, params = {}) {
   const response = await fetch(URL, {
@@ -9,6 +10,7 @@ async function mcpRequest(id, method, params = {}) {
     headers: {
       "Content-Type": "application/json",
       "Accept": "application/json, text/event-stream",
+      "x-api-key": API_KEY,
     },
     body: JSON.stringify({
       jsonrpc: "2.0",
@@ -31,6 +33,12 @@ async function mcpRequest(id, method, params = {}) {
   return JSON.parse(dataLine.slice(6));
 }
 
+if (!API_KEY) {
+  console.log(
+    "MCP protocol validation skipped: AFRI_API_KEY is not set."
+  );
+  process.exit(0);
+}
 const initialized = await mcpRequest(
   1,
   "initialize",

@@ -30,6 +30,7 @@ import {
 import { persistEvent } from "./intelligence/persist.js";
 import { getIntelligenceReport } from "./intelligence/report.js";
 import { chargeToolRequest, settleToolRequest } from "./billing/gate.js";
+import { authenticateCustomer } from "./billing/auth.js";
 import { handleRestApi } from "./api/rest.js";
 import { handleKeyApi } from "./api/keys.js";
 import { handleDeveloperPage } from "./api/developers.js";
@@ -826,6 +827,23 @@ country,
         JSON.stringify(payment),
         {
           status,
+          headers: {
+            "content-type": "application/json",
+          },
+        }
+      );
+    }
+
+    const mcpApiKey = getApiKey(request);
+    const mcpAuthentication = await authenticateCustomer(env.DB, mcpApiKey);
+
+    if (!mcpAuthentication.authenticated) {
+      return new Response(
+        JSON.stringify({
+          error: mcpAuthentication.reason || "invalid_api_key",
+        }),
+        {
+          status: 401,
           headers: {
             "content-type": "application/json",
           },

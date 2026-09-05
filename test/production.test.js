@@ -3,12 +3,15 @@ import assert from "node:assert/strict";
 const URL =
   "https://afriresolve-mcp.afriresolve28.workers.dev/mcp";
 
+const API_KEY = process.env.AFRI_API_KEY?.trim();
+
 async function callTool(query) {
   const response = await fetch(URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Accept": "application/json, text/event-stream",
+        "x-api-key": API_KEY,
     },
     body: JSON.stringify({
       jsonrpc: "2.0",
@@ -44,6 +47,13 @@ async function callTool(query) {
   );
 
   return JSON.parse(mcpResponse.result.content[0].text);
+}
+
+if (!API_KEY) {
+  console.log(
+    "Production validation skipped: AFRI_API_KEY is not set."
+  );
+  process.exit(0);
 }
 
 const tests = [

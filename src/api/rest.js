@@ -78,7 +78,7 @@ export async function handleRestApi(request, env, ctx) {
 
         const result = resolveFood(query);
 
-        if (!result) {
+        if (!result.success) {
           return { error: "term_not_found", status: 404 };
         }
 

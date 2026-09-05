@@ -297,11 +297,16 @@ function renderPricing(marketCode) {
       return '<div class="card"><strong>' + plan[1] +
         '</strong><p>' + plan[2] + ' credits/month · ' +
         market.symbol + amount + '</p>' +
-              '<button type="button" onclick="startCheckout(\'' +
-              plan[0] + '\')" ' +
-              'style="margin-top:8px;padding:10px 16px;border:0;border-radius:8px;cursor:pointer">' +
-              'Buy ' + plan[1] + '</button></div>';
+          '<button type="button" data-plan="' + plan[0] + '" ' +
+        'style="margin-top:8px;padding:10px 16px;border:0;border-radius:8px;cursor:pointer">' +
+        'Buy ' + plan[1] + '</button></div>';
     }).join("");
+
+      document.querySelectorAll("#pricingCards button[data-plan]").forEach(function(button) {
+        button.addEventListener("click", function() {
+          startCheckout(button.dataset.plan);
+        });
+      });
 }
 
 function detectMarket() {

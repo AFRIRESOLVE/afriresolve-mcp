@@ -14,8 +14,8 @@ export function handleDeveloperPage(request) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AfriResolve Developer API</title>
-<meta name="description" content="Africa-focused food, terminology and cultural intelligence API.">
+<title>AfriResolve — African Intelligence for AI Agents</title>
+<meta name="description" content="Machine-readable African intelligence for AI agents, developers and data products through MCP, REST and x402 payments.">
 <style>
 body{font-family:system-ui,sans-serif;max-width:900px;margin:auto;padding:32px;line-height:1.6;color:#17202a}
 h1{font-size:42px;line-height:1.1}
@@ -30,18 +30,19 @@ a{color:#075985}
 </head>
 <body>
 
-<span class="badge">AFRIRESOLVE DEVELOPER API</span>
+<span class="badge">AFRIRESOLVE AI INTELLIGENCE INFRASTRUCTURE</span>
 
-<h1>Africa intelligence for developers.</h1>
+<h1>African intelligence infrastructure for AI agents.</h1>
 
-<p>AfriResolve helps applications understand African food terminology,
-names, aliases and related knowledge through a simple API and MCP tools.</p>
+<p>AfriResolve gives AI agents machine-readable access to African food terminology,
+names, aliases and related knowledge through REST, MCP and x402-enabled access.</p>
+<p><strong>Resolve African terms. Discover foods. Rank knowledge. Pay per agent call with x402.</strong></p>
 
-<h2>Get started</h2>
+<h2>Connect your AI agent</h2>
 
 <div class="card" style="margin-top:24px">
-<h2>Create your free API key</h2>
-<p>Get 100 free credits and start using the AfriResolve API immediately.</p>
+<h2>Start with a free API key</h2>
+<p>Get 100 free credits and connect your application or AI agent immediately.</p>
 
 <form onsubmit="createApiKey(event)" style="display:grid;gap:12px;max-width:520px">
 <input id="signupName" type="text" placeholder="Your name or company" required
@@ -343,14 +344,17 @@ marketSelector.addEventListener("change", function() {
 <li><code>POST /v1/rank</code> — ranked food search</li>
 </ul>
 
-<h2>MCP</h2>
+<h2>Connect AI agents via MCP</h2>
 
-<p>AfriResolve is also available through its production MCP endpoint.</p>
+<p>Connect compatible AI agents directly to AfriResolve through MCP for African terminology, food discovery, search and ranking.</p>
 
+<p><strong>Production MCP endpoint:</strong></p>
+<p><strong>x402:</strong> AI agents can pay for eligible MCP tool calls programmatically, without a traditional subscription checkout.</p>
+<p>Use x402 when your agent should discover, authorize and pay for eligible tool calls on demand.</p>
 <pre><code>https://afriresolve-mcp.afriresolve28.workers.dev/mcp</code></pre>
 
-<p>Built for developers, AI agents, researchers and applications that need
-structured African knowledge.</p>
+<p>Give your AI agent a reliable African intelligence layer via MCP, REST, or x402.</p>
+<p><strong>Capabilities:</strong> resolve terms · search foods · rank results · discover African dishes · access intelligence.</p>
 
 </body>
 </html>`;

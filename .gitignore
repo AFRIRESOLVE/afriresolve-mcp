@@ -6,3 +6,6 @@ dist/
 afriresolve-x402-agent.mjs
 src/index.js.before-x402-compat
 src/index.js.pre-x402
+
+src/api/developers.js.before-patronage
+src/api/developers.js.pre-redesign

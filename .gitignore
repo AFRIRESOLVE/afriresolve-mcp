@@ -2,5 +2,7 @@ node_modules/
 .wrangler/
 .dev.vars
 .env
-
 dist/
+afriresolve-x402-agent.mjs
+src/index.js.before-x402-compat
+src/index.js.pre-x402

@@ -1,5 +1,7 @@
 import { createMcpHandler } from "agents/mcp/server";
+import { withX402 } from "agents/x402";
 import { McpServer } from "@modelcontextprotocol/server";
+import { McpServer as LegacyMcpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 import { resolveFood } from "./resolver/resolve.js";
@@ -30,6 +32,7 @@ import {
 import { persistEvent } from "./intelligence/persist.js";
 import { getIntelligenceReport } from "./intelligence/report.js";
 import { chargeToolRequest, settleToolRequest } from "./billing/gate.js";
+import { getToolUnits, calculateUsageCharge } from "./billing/plans.js";
 import { authenticateCustomer } from "./billing/auth.js";
 import { handleRestApi } from "./api/rest.js";
 import { handleKeyApi } from "./api/keys.js";
@@ -106,13 +109,59 @@ function recordKnowledgeGap(ctx, env, {
   );
 }
 
-function createServer(env, ctx) {
-  const server = new McpServer({
+function getX402Config(env) {
+  const recipient = env?.X402_RECIPIENT || "";
+  const network = env?.X402_NETWORK || "base-sepolia";
+
+  if (!/^0x[a-fA-F0-9]{40}$/.test(recipient)) {
+    throw new Error("AfriResolve x402 recipient is not configured");
+  }
+
+  return {
+    network,
+    recipient,
+    facilitator: {
+      url: "https://x402.org/facilitator",
+    },
+  };
+}
+
+function registerAfriResolveTool(server, paid, name, config, callback) {
+  if (!paid) {
+    return server.registerTool(name, config, callback);
+  }
+
+  const units = getToolUnits(name);
+  const priceUSD = calculateUsageCharge({
+    tool: name,
+    units,
+  });
+
+  return server.paidTool(
+    name,
+    config.description || "",
+    priceUSD,
+    config.inputSchema || {},
+    config.annotations || {},
+    callback
+  );
+}
+
+function createServer(
+  env,
+  ctx,
+  { paid = false, ServerClass = McpServer } = {}
+) {
+  const server = new ServerClass({
     name: "AfriResolve",
     version: "1.0.0",
   });
 
-  server.registerTool(
+  if (paid) {
+    withX402(server, getX402Config(env));
+  }
+
+  registerAfriResolveTool(server, paid,
     "resolve_african_dish",
     {
       description:
@@ -160,7 +209,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "list_african_dishes",
     {
       description:
@@ -189,7 +238,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "find_dishes_by_country",
     {
       description:
@@ -224,7 +273,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "find_dishes_by_region",
     {
       description:
@@ -259,7 +308,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "find_dishes_by_ingredient",
     {
       description:
@@ -294,7 +343,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "resolve_african_term",
     {
       description:
@@ -333,7 +382,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "list_african_foods",
     {
       description:
@@ -362,7 +411,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "find_foods_by_category",
     {
       description:
@@ -397,7 +446,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "find_foods_by_country",
     {
       description:
@@ -432,7 +481,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "find_foods_by_region",
     {
       description:
@@ -467,7 +516,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "rank_african_foods",
     {
       description:
@@ -501,7 +550,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "search_african_foods",
     {
       description:
@@ -535,7 +584,7 @@ function createServer(env, ctx) {
     }
   );
 
-  server.registerTool(
+  registerAfriResolveTool(server, paid,
     "get_afriresolve_intelligence",
     {
       description:
@@ -851,57 +900,66 @@ country,
     }
 
     const mcpApiKey = getApiKey(request);
-    const mcpAuthentication = await authenticateCustomer(env.DB, mcpApiKey);
+    let mcpAuthentication = null;
 
-    if (!mcpAuthentication.authenticated) {
-      return new Response(
-        JSON.stringify({
-          error: mcpAuthentication.reason || "invalid_api_key",
-        }),
-        {
-          status: 401,
-          headers: {
-            "content-type": "application/json",
-          },
-        }
-      );
+    if (mcpApiKey) {
+      mcpAuthentication = await authenticateCustomer(env.DB, mcpApiKey);
+
+      if (!mcpAuthentication.authenticated) {
+        return new Response(
+          JSON.stringify({
+            error: mcpAuthentication.reason || "invalid_api_key",
+          }),
+          {
+            status: 401,
+            headers: {
+              "content-type": "application/json",
+            },
+          }
+        );
+      }
     }
 
     const toolName = await getToolName(request);
     let billing = null;
 
-    if (toolName && MCP_TOOL_NAMES.has(toolName)) {
-      const apiKey = getApiKey(request);
+    if (mcpApiKey && toolName && MCP_TOOL_NAMES.has(toolName)) {
+      billing = await chargeToolRequest(env.DB, mcpApiKey, toolName);
 
-      if (apiKey) {
-        billing = await chargeToolRequest(env.DB, apiKey, toolName);
+      if (!billing.allowed) {
+        const status =
+          billing.reason === "insufficient_credits_or_inactive_customer"
+            ? 402
+            : 401;
 
-        if (!billing.allowed) {
-          const status =
-            billing.reason === "insufficient_credits_or_inactive_customer"
-              ? 402
-              : 401;
-
-          return new Response(
-            JSON.stringify({
-              error: billing.reason,
-            }),
-            {
-              status,
-              headers: {
-                "content-type": "application/json",
-              },
-            }
-          );
-        }
+        return new Response(
+          JSON.stringify({
+            error: billing.reason,
+          }),
+          {
+            status,
+            headers: {
+              "content-type": "application/json",
+            },
+          }
+        );
       }
     }
 
-    const response = await createMcpHandler(() => createServer(env, ctx))(
-      request,
-      env,
-      ctx
-    );
+    const mcpHandler = createMcpHandler((requestInfo) => {
+  const legacy = requestInfo?.era === "legacy";
+
+  return createServer(env, ctx, {
+    paid: legacy && !mcpApiKey,
+    ServerClass: legacy ? LegacyMcpServer : McpServer,
+  });
+});
+
+const response = await mcpHandler(
+    request,
+    env,
+    ctx
+  );
 
     if (billing?.charged) {
       let successful = response.ok;

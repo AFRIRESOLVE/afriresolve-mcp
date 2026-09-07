@@ -4,6 +4,9 @@
   "main": "src/index.js",
   "compatibility_date": "2026-08-16",
   "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "X402_NETWORK": "base-sepolia"
+  },
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1,

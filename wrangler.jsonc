@@ -5,7 +5,7 @@
   "compatibility_date": "2026-08-16",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "X402_NETWORK": "base-sepolia"
+    "X402_NETWORK": "base"
   },
   "observability": {
     "enabled": true,

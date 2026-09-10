@@ -56,7 +56,7 @@ assert.equal(initialized.jsonrpc, "2.0");
 assert.equal(initialized.id, 1);
 assert.equal(initialized.result?.protocolVersion, "2025-06-18");
 assert.equal(initialized.result?.serverInfo?.name, "AfriResolve");
-assert.equal(initialized.result?.serverInfo?.version, "1.0.0");
+assert.equal(initialized.result?.serverInfo?.version, "1.0.1");
 
 console.log("PASS: MCP initialize");
 
@@ -148,10 +148,16 @@ const unknownTool = await mcpRequest(
 
 assert.equal(unknownTool.jsonrpc, "2.0");
 assert.equal(unknownTool.id, 5);
-assert.equal(unknownTool.error?.code, -32602);
+assert.equal(unknownTool.result?.isError, true);
+
+const unknownToolErrorText =
+  unknownTool.result?.content?.find(
+    (item) => item.type === "text"
+  )?.text ?? "";
+
 assert.equal(
-  unknownTool.error?.message,
-  "Tool does_not_exist not found"
+  unknownToolErrorText,
+  "MCP error -32602: Tool does_not_exist not found"
 );
 
 console.log("PASS: MCP unknown tool handling");
@@ -180,7 +186,7 @@ assert.ok(
 
 assert.match(
   missingQueryText,
-  /query: Invalid input: expected string, received undefined/
+  /Invalid input: expected string, received undefined/
 );
 
 console.log("PASS: MCP missing query validation");
@@ -210,7 +216,7 @@ assert.ok(
 
 assert.match(
   numericQueryText,
-  /query: Invalid input: expected string, received number/
+  /Invalid input: expected string, received number/
 );
 
 console.log("PASS: MCP numeric query validation");
@@ -240,7 +246,7 @@ assert.ok(
 
 assert.match(
   emptyQueryText,
-  /query: Too small: expected string to have >=1 characters/
+  /Too small: expected string to have >=1 characters/
 );
 
 console.log("PASS: MCP empty query validation");

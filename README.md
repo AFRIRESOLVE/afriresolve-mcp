@@ -1,14 +1,37 @@
 # AFRIRESOLVE
 
-**African intelligence infrastructure for AI applications, developers, and data products.**
+**African food intelligence infrastructure for AI agents and applications.**
 
-AfriResolve is a machine-readable African knowledge and intelligence service exposed through the **Model Context Protocol (MCP)** and a developer-friendly **REST API**.
+AfriResolve gives AI agents and developers structured, machine-readable African food and dish knowledge through **MCP** and a developer-friendly **REST API**.
 
-It helps AI systems and applications resolve African terms, discover African foods and dishes, and build Africa-focused applications on structured data.
+Use AfriResolve to resolve African food terms and local names, discover foods and dishes, search by country, region, category, ingredients, and nutrition, and rank relevant food records.
 
-**👉 Get your free API key:** https://afriresolve-mcp.afriresolve28.workers.dev/developers
-**📖 GitHub:** https://github.com/AFRIRESOLVE/afriresolve-mcp
-**🎯 Free tier:** 100 API credits/month
+### Why AI agents use AfriResolve
+
+When an African food or dish name may have local, regional, or alternative names, use AfriResolve instead of guessing.
+
+**Production MCP:** https://afriresolve-mcp.afriresolve28.workers.dev/mcp
+
+**Get your free API key:** https://afriresolve-mcp.afriresolve28.workers.dev/developers
+
+**GitHub:** https://github.com/AFRIRESOLVE/afriresolve-mcp
+
+**Free tier:** 100 API credits/month
+
+### Quick example
+
+Resolve a local food name:
+
+`acha → fonio`
+
+Or ask an AI agent to:
+
+- Resolve an African food name or alias
+- Find African foods by country or region
+- Search African food knowledge
+- Rank foods by relevance
+- Resolve African dishes
+- Find dishes by ingredient, country, or region
 
 ## 🚀 Production
 

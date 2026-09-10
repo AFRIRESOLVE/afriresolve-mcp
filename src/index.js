@@ -121,7 +121,7 @@ function getX402Config(env) {
     network,
     recipient,
     facilitator: {
-      url: "https://x402.org/facilitator",
+      url: "https://facilitator.payai.network",
     },
   };
 }
@@ -132,10 +132,7 @@ function registerAfriResolveTool(server, paid, name, config, callback) {
   }
 
   const units = getToolUnits(name);
-  const priceUSD = calculateUsageCharge({
-    tool: name,
-    units,
-  });
+  const priceUSD = Number((units * 0.01).toFixed(6));
 
   return server.paidTool(
     name,
@@ -154,7 +151,7 @@ function createServer(
 ) {
   const server = new ServerClass({
     name: "AfriResolve",
-    version: "1.0.0",
+    version: "1.0.1",
   });
 
   if (paid) {

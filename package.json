@@ -1,7 +1,7 @@
 {
   "name": "afriresolve-mcp",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "African intelligence infrastructure for AI agents, applications, and data products. Resolve African food terms, discover foods and dishes, and search structured African food knowledge through MCP and REST APIs.",
   "main": "index.js",
   "scripts": {
     "test": "NODE_OPTIONS=\"--dns-result-order=ipv4first\" node test/resolve.test.js && node test/data.test.js && node test/data.integrity.test.js && node test/query.test.js && node test/billing.meter.test.js && node test/billing.gate.test.js && node test/api.rest.test.js && node test/payments.localization.test.js && node test/payments.fulfill.test.js && node test/intelligence.events.test.js && node test/intelligence.aggregate.test.js && node test/intelligence.persist.test.js && node test/developers.page.test.js && node test/production.test.js && node test/mcp.protocol.test.js"
@@ -10,7 +10,22 @@
     "type": "git",
     "url": "git+https://github.com/AFRIRESOLVE/afriresolve-mcp.git"
   },
-  "keywords": [],
+  "keywords": [
+    "africa",
+    "african-food",
+    "african-cuisine",
+    "food-api",
+    "african-food-api",
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "ai-agents",
+    "ai-tools",
+    "developer-api",
+    "food-knowledge-base",
+    "nutrition",
+    "african-dishes"
+  ],
   "author": "",
   "license": "ISC",
   "type": "module",
